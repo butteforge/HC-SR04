@@ -8,6 +8,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(inputPin, GPIO.IN) 
 GPIO.setup(outputPin, GPIO.OUT) 
 
+speedOfSound = 343 # this is in meteres/second
+
+
 # Loop: getting distance from HC-SR04
 try:
     while True:
@@ -18,27 +21,32 @@ try:
         time.sleep(10E-6)
         GPIO.output(outputPin, False)
 
-        # Wait for signal
+        # Wait for echo to go HIGH
+        start_wait = time.time()
         while GPIO.input(inputPin) == 0:
-            pass
+            if time.time() - start_wait > 0.03:
+                print("No echo received")
+                break
 
-        # Mark start of signal
         start = time.time()
 
-        # Wait for signal end
+        # Wait for echo to go LOW
         while GPIO.input(inputPin) == 1:
-            pass
+            if time.time() - start > 0.03:
+                print("Out of range")
+                break
 
-        # Mark end of signal
         stop = time.time()
 
-        # Calculate and display travel time
         travelTime = stop - start
-        print("Travel Time:", str(int(travelTime * 1E6)))
+        distance = (travelTime * speedOfSound / 2) * 100
+
+        if distance <= 400:
+            print(f"Travel Distance: {distance:.2f} cm")
 
         # Buffer
         time.sleep(0.2)
-
+        lastDistance = distance
 # Use Ctrl + C to end and cleanup
 except KeyboardInterrupt:
     GPIO.cleanup()
