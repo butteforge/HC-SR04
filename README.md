@@ -1,8 +1,8 @@
 # HC-SR04 - Echo Location Sensor
 
-Branched from Clinton's Branch
+Created from Clinton's Branch
 
-## Contributors:
+## Contributors (Branch Specific):
 
 -  Dylan Baldwin
 -  Mikayla Iten
